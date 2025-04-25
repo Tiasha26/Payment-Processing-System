@@ -25,12 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['refund_transaction_id'])) {
         $transaction_id = $_POST['refund_transaction_id'];
         if (processRefund($transaction_id)) {
-            $_SESSION['message'] = "Refund processed successfully!";
+            // Redirect to refund details page instead of showing a message
+            header("Location: refund_details.php?transaction_id=" . $transaction_id);
+            exit();
         } else {
             $_SESSION['error'] = "Failed to process refund.";
+            header("Location: refund.php");
+            exit();
         }
-        header("Location: refund.php");
-        exit();
     }
 }
 ?>

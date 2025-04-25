@@ -10,16 +10,6 @@ if (!isset($_SESSION['transaction'])) {
 
 $transaction = $_SESSION['transaction'];
 
-// Handle refund request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund'])) {
-    if (processRefund($transaction['id'])) {
-        $_SESSION['message'] = "Refund processed successfully!";
-    } else {
-        $_SESSION['error'] = "Failed to process refund.";
-    }
-    header("Location: index.php");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -69,10 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund'])) {
                     </div>
 
                     <div class="text-center">
-                        <form method="post" onsubmit="return confirm('Are you sure you want to process a refund?');">
-                            <button type="submit" name="refund" class="btn btn-warning">Request Refund</button>
                             <a href="index.php" class="btn btn-primary">Make Another Payment</a>
-                        </form>
                     </div>
                 </div>
             </div>
