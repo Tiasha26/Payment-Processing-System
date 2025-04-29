@@ -2,27 +2,6 @@
 session_start();
 require_once 'config.php';
 
-$payment_method_config = [
-    'credit_card' => [
-        'transaction_fee' => 1.00,
-        'processing_time' => 5,
-        'min_amount' => 10,
-        'max_amount' => 100000
-    ],
-    'paypal' => [
-        'transaction_fee' => 2.00,
-        'processing_time' => 10,
-        'min_amount' => 10,
-        'max_amount' => 100000
-    ],
-    'cryptocurrency' => [
-        'transaction_fee' => 0.00,
-        'processing_time' => 0,
-        'min_amount' => 10,
-        'max_amount' => 100000
-    ]
-];
-
 // Process the form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
