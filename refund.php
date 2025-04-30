@@ -23,13 +23,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Handle refund request
     if (isset($_POST['refund_transaction_id'])) {
-        $transaction_id = $_POST['refund_transaction_id'];
+        $transaction_id = intval($_POST['refund_transaction_id']);
+        
+        // Validate transaction exists and is in correct state
+        if (!isset($_SESSION['transactions'][$transaction_id])) {
+            $_SESSION['error'] = "Invalid transaction ID.";
+            header("Location: refund.php");
+            exit();
+        }
+        
+        $transaction = $_SESSION['transactions'][$transaction_id];
+        if ($transaction['status'] !== 'completed') {
+            $_SESSION['error'] = "This transaction cannot be refunded.";
+            header("Location: refund.php");
+            exit();
+        }
+        
         if (processRefund($transaction_id)) {
-            // Redirect to refund details page instead of showing a message
+            // Redirect to refund details page
             header("Location: refund_details.php?transaction_id=" . $transaction_id);
             exit();
         } else {
-            $_SESSION['error'] = "Failed to process refund.";
+            $_SESSION['error'] = "Failed to process refund. Please try again.";
             header("Location: refund.php");
             exit();
         }

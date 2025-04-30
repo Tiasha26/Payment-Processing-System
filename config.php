@@ -49,18 +49,34 @@ function getOrCreateUser($name, $initial_balance) {
 
 // Function to process refund
 function processRefund($transaction_id) {
-    if (isset($_SESSION['transactions'][$transaction_id])) {
+    try {
+        if (!isset($_SESSION['transactions'][$transaction_id])) {
+            return false;
+        }
+
         $transaction = $_SESSION['transactions'][$transaction_id];
+        
+        // Check if transaction is already refunded
+        if ($transaction['status'] === 'refunded') {
+            return false;
+        }
         
         // Update transaction status
         $_SESSION['transactions'][$transaction_id]['status'] = 'refunded';
         
         // Update user balance
         $user_name = $transaction['name'];
-        $_SESSION['users'][$user_name]['balance'] += $transaction['amount'];
+        if (!isset($_SESSION['users'][$user_name])) {
+            return false;
+        }
+        
+        // Calculate total amount to refund (amount + transaction fee)
+        $total_refund = $transaction['amount'] + $transaction['transaction_fee'];
+        $_SESSION['users'][$user_name]['balance'] += $total_refund;
         
         return true;
+    } catch (Exception $e) {
+        return false;
     }
-    return false;
 }
 ?> 
